@@ -1,73 +1,73 @@
 import Foundation
 
-class MovimientoViewModel: ObservableObject {
-    @Published var movimientos: [Movimiento] = []
-    @Published var configuracion = Configuracion(limiteMensual: 0)
+class MovementViewModel: ObservableObject {
+    @Published var movements: [Movement] = []
+    @Published var configuration = Configuration(monthlyLimit: 0)
 
-    // Recomendaciones y análisis
-    func recomendaciones(mes: Int, anio: Int) -> [String] {
+    // Recommendations and analysis
+    func recommendations(month: Int, year: Int) -> [String] {
         var recs: [String] = []
-        let gastos = totalGastos(mes: mes, anio: anio)
-        let ingresos = totalIngresos(mes: mes, anio: anio)
-        if ingresos == 0 {
-            recs.append("No hay ingresos registrados este mes.")
-        } else if gastos > ingresos {
-            recs.append("Tus gastos superan tus ingresos. Considera reducir gastos.")
-        } else if gastos > ingresos * 0.8 {
-            recs.append("Estás gastando más del 80% de tus ingresos.")
+        let expenses = totalExpenses(month: month, year: year)
+        let incomes = totalIncomes(month: month, year: year)
+        if incomes == 0 {
+            recs.append("No income registered this month.")
+        } else if expenses > incomes {
+            recs.append("Your expenses exceed your income. Consider reducing expenses.")
+        } else if expenses > incomes * 0.8 {
+            recs.append("You are spending more than 80% of your income.")
         } else {
-            recs.append("¡Buen trabajo! Tus gastos están bajo control.")
+            recs.append("Good job! Your expenses are under control.")
         }
-        if gastos > configuracion.limiteMensual && configuracion.limiteMensual > 0 {
-            recs.append("Has superado tu límite mensual de gastos.")
+        if expenses > configuration.monthlyLimit && configuration.monthlyLimit > 0 {
+            recs.append("You have exceeded your monthly spending limit.")
         }
-        // Categoría con más gasto
-        let cat = categoriaMayorGasto(mes: mes, anio: anio)
+        // Category with most expense
+        let cat = highestExpenseCategory(month: month, year: year)
         if let cat = cat {
-            recs.append("La categoría con más gasto es: \(cat.rawValue.capitalized)")
+            recs.append("The category with the most expense is: \(cat.rawValue.capitalized)")
         }
         return recs
     }
 
-    func categoriaMayorGasto(mes: Int, anio: Int) -> Categoria? {
-        let gastos = movimientos.filter {
-            $0.tipo == .gasto &&
-            Calendar.current.component(.month, from: $0.fecha) == mes &&
-            Calendar.current.component(.year, from: $0.fecha) == anio
+    func highestExpenseCategory(month: Int, year: Int) -> Category? {
+        let expenses = movements.filter {
+            $0.type == .expense &&
+            Calendar.current.component(.month, from: $0.date) == month &&
+            Calendar.current.component(.year, from: $0.date) == year
         }
-        let agrupados = Dictionary(grouping: gastos, by: { $0.categoria })
-        let sumaPorCat = agrupados.mapValues { $0.reduce(0) { $0 + $1.cantidad } }
-        return sumaPorCat.max(by: { $0.value < $1.value })?.key
+        let grouped = Dictionary(grouping: expenses, by: { $0.category })
+        let sumByCat = grouped.mapValues { $0.reduce(0) { $0 + $1.amount } }
+        return sumByCat.max(by: { $0.value < $1.value })?.key
     }
 
-    func gastosPorCategoria(mes: Int, anio: Int) -> [(Categoria, Double)] {
-        let gastos = movimientos.filter {
-            $0.tipo == .gasto &&
-            Calendar.current.component(.month, from: $0.fecha) == mes &&
-            Calendar.current.component(.year, from: $0.fecha) == anio
+    func expensesByCategory(month: Int, year: Int) -> [(Category, Double)] {
+        let expenses = movements.filter {
+            $0.type == .expense &&
+            Calendar.current.component(.month, from: $0.date) == month &&
+            Calendar.current.component(.year, from: $0.date) == year
         }
-        let agrupados = Dictionary(grouping: gastos, by: { $0.categoria })
-        let sumaPorCat = agrupados.mapValues { $0.reduce(0) { $0 + $1.cantidad } }
-        return sumaPorCat.sorted { $0.value > $1.value }
+        let grouped = Dictionary(grouping: expenses, by: { $0.category })
+        let sumByCat = grouped.mapValues { $0.reduce(0) { $0 + $1.amount } }
+        return sumByCat.sorted { $0.value > $1.value }
     }
 
-    func agregarMovimiento(_ movimiento: Movimiento) {
-        movimientos.append(movimiento)
+    func addMovement(_ movement: Movement) {
+        movements.append(movement)
     }
 
-    func totalGastos(mes: Int, anio: Int) -> Double {
-        movimientos.filter {
-            $0.tipo == .gasto &&
-            Calendar.current.component(.month, from: $0.fecha) == mes &&
-            Calendar.current.component(.year, from: $0.fecha) == anio
-        }.reduce(0) { $0 + $1.cantidad }
+    func totalExpenses(month: Int, year: Int) -> Double {
+        movements.filter {
+            $0.type == .expense &&
+            Calendar.current.component(.month, from: $0.date) == month &&
+            Calendar.current.component(.year, from: $0.date) == year
+        }.reduce(0) { $0 + $1.amount }
     }
 
-    func totalIngresos(mes: Int, anio: Int) -> Double {
-        movimientos.filter {
-            $0.tipo == .ingreso &&
-            Calendar.current.component(.month, from: $0.fecha) == mes &&
-            Calendar.current.component(.year, from: $0.fecha) == anio
-        }.reduce(0) { $0 + $1.cantidad }
+    func totalIncomes(month: Int, year: Int) -> Double {
+        movements.filter {
+            $0.type == .income &&
+            Calendar.current.component(.month, from: $0.date) == month &&
+            Calendar.current.component(.year, from: $0.date) == year
+        }.reduce(0) { $0 + $1.amount }
     }
 }

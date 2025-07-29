@@ -1,21 +1,21 @@
 import SwiftUI
 
 struct ContentView: View {
-    @StateObject var viewModel = MovimientoViewModel()
+    @StateObject var viewModel = MovementViewModel()
 
     var body: some View {
         TabView {
-            AnalisisView(viewModel: viewModel)
+            AnalysisView(viewModel: viewModel)
                 .tabItem {
-                    Label("Análisis", systemImage: "chart.pie")
+                    Label("Analysis", systemImage: "chart.pie")
                 }
-            ImportarView(viewModel: viewModel)
+            ImportView(viewModel: viewModel)
                 .tabItem {
-                    Label("Importar", systemImage: "tray.and.arrow.down")
+                    Label("Import", systemImage: "tray.and.arrow.down")
                 }
-            ConfiguracionView(viewModel: viewModel)
+            ConfigurationView(viewModel: viewModel)
                 .tabItem {
-                    Label("Configuración", systemImage: "gear")
+                    Label("Configuration", systemImage: "gear")
                 }
         }
     }

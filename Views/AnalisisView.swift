@@ -1,41 +1,41 @@
 import SwiftUI
 
-struct AnalisisView: View {
-    @ObservedObject var viewModel: MovimientoViewModel
+struct AnalysisView: View {
+    @ObservedObject var viewModel: MovementViewModel
 
-    @State private var mesActual = Calendar.current.component(.month, from: Date())
-    @State private var anioActual = Calendar.current.component(.year, from: Date())
+    @State private var currentMonth = Calendar.current.component(.month, from: Date())
+    @State private var currentYear = Calendar.current.component(.year, from: Date())
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                Text("Resumen mensual")
+                Text("Monthly Summary")
                     .font(.headline)
                 HStack {
-                    Text("Mes: ")
-                    Picker("Mes", selection: $mesActual) {
+                    Text("Month: ")
+                    Picker("Month", selection: $currentMonth) {
                         ForEach(1...12, id: \ .self) { m in
                             Text("\(DateFormatter().monthSymbols[m-1])").tag(m)
                         }
                     }.pickerStyle(MenuPickerStyle())
-                    Text("Año: ")
-                    Picker("Año", selection: $anioActual) {
+                    Text("Year: ")
+                    Picker("Year", selection: $currentYear) {
                         ForEach((2020...Calendar.current.component(.year, from: Date())).reversed(), id: \ .self) { y in
                             Text("\(y)").tag(y)
                         }
                     }.pickerStyle(MenuPickerStyle())
                 }
                 Divider()
-                Text("Ingresos: $\(viewModel.totalIngresos(mes: mesActual, anio: anioActual), specifier: "%.2f")")
-                Text("Gastos: $\(viewModel.totalGastos(mes: mesActual, anio: anioActual), specifier: "%.2f")")
+                Text("Income: $\(viewModel.totalIncomes(month: currentMonth, year: currentYear), specifier: "%.2f")")
+                Text("Expenses: $\(viewModel.totalExpenses(month: currentMonth, year: currentYear), specifier: "%.2f")")
                 Divider()
-                Text("Recomendaciones:").font(.subheadline)
-                ForEach(viewModel.recomendaciones(mes: mesActual, anio: anioActual), id: \ .self) { rec in
+                Text("Recommendations:").font(.subheadline)
+                ForEach(viewModel.recommendations(month: currentMonth, year: currentYear), id: \ .self) { rec in
                     Text("• " + rec)
                 }
                 Divider()
-                Text("Gastos por categoría:").font(.subheadline)
-                PieChartView(data: viewModel.gastosPorCategoria(mes: mesActual, anio: anioActual))
+                Text("Expenses by category:").font(.subheadline)
+                PieChartView(data: viewModel.expensesByCategory(month: currentMonth, year: currentYear))
             }
             .padding()
         }
@@ -43,12 +43,12 @@ struct AnalisisView: View {
 }
 
 struct PieChartView: View {
-    let data: [(Categoria, Double)]
+    let data: [(Category, Double)]
     var total: Double { data.reduce(0) { $0 + $1.1 } }
     let colors: [Color] = [.blue, .green, .orange, .purple, .pink, .gray]
     var body: some View {
         if data.isEmpty {
-            Text("Sin datos para graficar")
+            Text("No data to display")
         } else {
             GeometryReader { geo in
                 ZStack {

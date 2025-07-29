@@ -1,24 +1,25 @@
 import Foundation
 
 enum TipoMovimiento: String, Codable {
-    case ingreso
-    case gasto
+enum MovementType: String, Codable {
+    case income
+    case expense
 }
 
-struct Movimiento: Identifiable, Codable {
+struct Movement: Identifiable, Codable {
     let id: UUID
-    let fecha: Date
-    let descripcion: String
-    let cantidad: Double
-    let categoria: Categoria
-    let tipo: TipoMovimiento
+    let date: Date
+    let description: String
+    let amount: Double
+    let category: Category
+    let type: MovementType
 
-    init(fecha: Date, descripcion: String, cantidad: Double, categoria: Categoria, tipo: TipoMovimiento) {
+    init(date: Date, description: String, amount: Double, category: Category, type: MovementType) {
         self.id = UUID()
-        self.fecha = fecha
-        self.descripcion = descripcion
-        self.cantidad = cantidad
-        self.categoria = categoria
-        self.tipo = tipo
+        self.date = date
+        self.description = description
+        self.amount = amount
+        self.category = category
+        self.type = type
     }
 }

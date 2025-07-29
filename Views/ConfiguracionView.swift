@@ -1,19 +1,19 @@
 import SwiftUI
 
-struct ConfiguracionView: View {
-    @ObservedObject var viewModel: MovimientoViewModel
+struct ConfigurationView: View {
+    @ObservedObject var viewModel: MovementViewModel
 
     var body: some View {
         VStack {
-            Text("Configuración de límites")
+            Text("Limit Configuration")
                 .font(.headline)
             HStack {
-                Text("Límite mensual:")
-                TextField("Límite", value: $viewModel.configuracion.limiteMensual, formatter: NumberFormatter())
+                Text("Monthly limit:")
+                TextField("Limit", value: $viewModel.configuration.monthlyLimit, formatter: NumberFormatter())
                     .keyboardType(.decimalPad)
             }
             .padding()
-            // Puedes agregar más configuraciones aquí
+            // You can add more configurations here
         }
         .padding()
     }

@@ -2,7 +2,7 @@ import Foundation
 import PDFKit
 
 class PDFParserUtil {
-    static func parse(data: Data) -> [Movimiento] {
+    static func parse(data: Data) -> [Movement] {
         guard let pdfDoc = PDFDocument(data: data) else { return [] }
         var text = ""
         for i in 0..<pdfDoc.pageCount {
@@ -10,28 +10,28 @@ class PDFParserUtil {
                 text += pageText + "\n"
             }
         }
-        // Asumimos que cada línea es: fecha,descripcion,cantidad,categoria,tipo
+        // Assume each line is: date,description,amount,category,type
         let lines = text.components(separatedBy: .newlines).filter { !$0.isEmpty }
-        var movimientos: [Movimiento] = []
+        var movements: [Movement] = []
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
         for line in lines {
             let fields = line.components(separatedBy: ",")
             if fields.count >= 5,
-               let fecha = dateFormatter.date(from: fields[0]),
-               let cantidad = Double(fields[2]),
-               let categoria = Categoria(rawValue: fields[3]),
-               let tipo = TipoMovimiento(rawValue: fields[4]) {
-                let mov = Movimiento(
-                    fecha: fecha,
-                    descripcion: fields[1],
-                    cantidad: cantidad,
-                    categoria: categoria,
-                    tipo: tipo
+               let date = dateFormatter.date(from: fields[0]),
+               let amount = Double(fields[2]),
+               let category = Category(rawValue: fields[3]),
+               let type = MovementType(rawValue: fields[4]) {
+                let mov = Movement(
+                    date: date,
+                    description: fields[1],
+                    amount: amount,
+                    category: category,
+                    type: type
                 )
-                movimientos.append(mov)
+                movements.append(mov)
             }
         }
-        return movimientos
+        return movements
     }
 }

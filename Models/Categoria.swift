@@ -1,12 +1,14 @@
 import Foundation
 
 enum Categoria: String, Codable, CaseIterable, Identifiable {
-    case alimentacion
-    case transporte
-    case ocio
-    case vivienda
-    case salud
-    case otros
+
+enum Category: String, Codable, CaseIterable, Identifiable {
+    case food
+    case transport
+    case leisure
+    case housing
+    case health
+    case others
 
     var id: String { self.rawValue }
 }

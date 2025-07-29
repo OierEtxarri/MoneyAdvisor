@@ -1,6 +1,6 @@
 import Foundation
 
-struct Configuracion: Codable {
-    var limiteMensual: Double
-    // Puedes agregar más configuraciones aquí
+struct Configuration: Codable {
+    var monthlyLimit: Double
+    // You can add more configurations here
 }

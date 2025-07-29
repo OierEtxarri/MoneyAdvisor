@@ -1,15 +1,15 @@
 import SwiftUI
 
-struct ImportarView: View {
-    @ObservedObject var viewModel: MovimientoViewModel
+struct ImportView: View {
+    @ObservedObject var viewModel: MovementViewModel
 
     @State private var showFileImporter = false
     @State private var importError: String?
     var body: some View {
         VStack {
-            Text("Importar movimientos bancarios")
+            Text("Import bank movements")
                 .font(.headline)
-            Button("Seleccionar archivo") {
+            Button("Select file") {
                 showFileImporter = true
             }
             .fileImporter(
@@ -37,19 +37,19 @@ struct ImportarView: View {
         do {
             let data = try Data(contentsOf: url)
             let ext = url.pathExtension.lowercased()
-            var nuevos: [Movimiento] = []
+            var newMovements: [Movement] = []
             if ext == "csv" {
-                nuevos = CSVParser.parse(data: data)
+                newMovements = CSVParser.parse(data: data)
             } else if ext == "xml" {
-                nuevos = XMLParserUtil.parse(data: data)
+                newMovements = XMLParserUtil.parse(data: data)
             } else if ext == "pdf" {
-                nuevos = PDFParserUtil.parse(data: data)
+                newMovements = PDFParserUtil.parse(data: data)
             } else {
-                importError = "Tipo de archivo no soportado"
+                importError = "Unsupported file type"
                 return
             }
-            for mov in nuevos {
-                viewModel.agregarMovimiento(mov)
+            for mov in newMovements {
+                viewModel.addMovement(mov)
             }
             importError = nil
         } catch {
